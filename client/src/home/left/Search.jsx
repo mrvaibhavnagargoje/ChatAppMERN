@@ -8,13 +8,15 @@ function Search() {
   const [search, setSearch] = useState("");
   const [allUsers] = useGetAllUsers();
   const { setSelectedConversation } = useConversation();
-  console.log(allUsers);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!search) return;
+
     const conversation = allUsers.find((user) =>
       user.name?.toLowerCase().includes(search.toLowerCase())
     );
+
     if (conversation) {
       setSelectedConversation(conversation);
       setSearch("");
@@ -22,37 +24,40 @@ function Search() {
       toast.error("User not found");
     }
   };
-  return (
-    <div className="h-[10vh] bg-gray-950 flex items-center justify-center">
-      <div className="w-full max-w-2xl px-6">
-        <form onSubmit={handleSubmit} className="transition-all rounded-full shadow-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 bg-gray-800">
-          <div className="flex items-center gap-3 p-2">
-            {/* Input Field */}
-            <label className="flex items-center gap-2 w-full">
-              <input
-                type="text"
-                className="w-full bg-transparent text-white placeholder:text-gray-400 px-4 py-2 outline-none"
-                placeholder="Search something..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </label>
 
-            {/* Button */}
-            <button
-              type="submit"
-              className="bg-gray-600 text-white p-3 rounded-full hover:bg-blue-700 transition-all duration-300 active:scale-95"
-            >
-              <FaSearch size={18} />
-            </button>
-          </div>
-        </form>
-      </div>
+  return (
+    <div className="h-[10vh] bg-gray-950 flex items-center justify-center px-3 sm:px-6">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-2xl transition-all rounded-full shadow-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 bg-gray-800"
+      >
+        <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3">
+          {/* Input Field */}
+          <label className="flex items-center gap-2 w-full">
+            <input
+              type="text"
+              className="w-full bg-transparent text-white placeholder:text-gray-400 text-sm sm:text-base px-3 sm:px-4 py-2 outline-none"
+              placeholder="Search users..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </label>
+
+          {/* Button */}
+          <button
+            type="submit"
+            className="bg-gray-600 text-white p-2 sm:p-3 rounded-full hover:bg-blue-700 transition-all duration-300 active:scale-95"
+          >
+            <FaSearch size={16} className="sm:size-5" />
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
 
 export default Search;
+
 
 
 
