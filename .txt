@@ -1,0 +1,23 @@
+*******Message Model*******
+
+Priti(sender)----> "Hello"
+Vaibhav(receiver) -->"Hii"
+
+
+_id =jksdjkn (mongoDB)
+senderID = 6800ffc7ecbebd50d0f6a5cc (pritu2@gmail.com)
+receiverID = 67fe4b60cd6854228e2112e7 (vaibhavprof@gmail.com)
+Message ="Hello"
+
+
+_id =jksdjkjhdfn (mongoDB)
+senderID = 67fe4b60cd6854228e2112e7 (vaibhavprof@gmail.com)
+receiverID = 6800ffc7ecbebd50d0f6a5cc (pritu2@gmail.com)
+Message ="Hi"
+
+
+Conversation Model
+
+_id = hksgdjfhsjghf (mongoDB)
+member[senderID,receiverID]
+Message[_id]

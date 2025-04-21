@@ -1,11 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
+import useGetAllUsers from "../../context/useGetAllUsers";
+import useConversation from "../../statemanage/useConversation";
+import toast from "react-hot-toast";
 
 function Search() {
+  const [search, setSearch] = useState("");
+  const [allUsers] = useGetAllUsers();
+  const { setSelectedConversation } = useConversation();
+  console.log(allUsers);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!search) return;
+    const conversation = allUsers.find((user) =>
+      user.name?.toLowerCase().includes(search.toLowerCase())
+    );
+    if (conversation) {
+      setSelectedConversation(conversation);
+      setSearch("");
+    } else {
+      toast.error("User not found");
+    }
+  };
   return (
     <div className="h-[10vh] bg-gray-950 flex items-center justify-center">
       <div className="w-full max-w-2xl px-6">
-        <form className="transition-all rounded-full shadow-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 bg-gray-800">
+        <form onSubmit={handleSubmit} className="transition-all rounded-full shadow-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 bg-gray-800">
           <div className="flex items-center gap-3 p-2">
             {/* Input Field */}
             <label className="flex items-center gap-2 w-full">
@@ -13,6 +33,8 @@ function Search() {
                 type="text"
                 className="w-full bg-transparent text-white placeholder:text-gray-400 px-4 py-2 outline-none"
                 placeholder="Search something..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
               />
             </label>
 

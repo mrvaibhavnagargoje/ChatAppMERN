@@ -1,44 +1,49 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Message from "./Message";
+import useGetMessage from "../../context/useGetMessage";
+import Loading from "../../components/Loading";
+import useGetSocketMessage from "../../context/useGetSocketMessage";
 
 function Messages() {
+  const { loading, messages } = useGetMessage();
+  console.log(messages);
+  useGetSocketMessage();
+  const lastMsgRef = useRef();
+  useEffect(() => {
+    setTimeout(() => {
+      if (lastMsgRef.current) {
+        lastMsgRef.current.scrollIntoView({
+          behavior: "smooth",
+        });
+      }
+    }, 100);
+  }, [messages]);
+
   return (
-    <>
-    <div className="" style={{minHeight:"calc(92vh-8vh)"}}><Message/></div>
-    </>
+    <div
+      className="flex-1 overflow-y-auto"
+      style={{ minHeight: "calc(92vh - 8vh)" }}
+    >
+      {loading ? (
+        <Loading />
+      ) : (
+        messages.length > 0 &&
+        messages.map((message) => (
+          <div key={message._id} ref={lastMsgRef}>
+            <Message message={message} />
+          </div>
+        ))
+      )}
+
+      {!loading && messages.length === 0 && (
+        <div>
+          <p className="text-center mt-[20%]">
+            Say! Hi to start the conversation
+          </p>
+        </div>
+      )}
+    </div>
   );
 }
 
 export default Messages;
-
-
-{/* <div className="chat chat-start">
-  <div className="chat-image avatar">
-    <div className="w-10 rounded-full">
-      <img
-        alt="Tailwind CSS chat bubble component"
-        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-    </div>
-  </div>
-  <div className="chat-header">
-    Obi-Wan Kenobi
-    <time className="text-xs opacity-50">12:45</time>
-  </div>
-  <div className="chat-bubble">You were the Chosen One!</div>
-  <div className="chat-footer opacity-50">Delivered</div>
-</div>
-<div className="chat chat-end">
-  <div className="chat-image avatar">
-    <div className="w-10 rounded-full">
-      <img
-        alt="Tailwind CSS chat bubble component"
-        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-    </div>
-  </div>
-  <div className="chat-header">
-    Anakin
-    <time className="text-xs opacity-50">12:46</time>
-  </div>
-  <div className="chat-bubble">I hate you!</div>
-  <div className="chat-footer opacity-50">Seen at 12:46</div>
-</div> */}

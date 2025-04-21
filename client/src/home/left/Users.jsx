@@ -1,27 +1,23 @@
-import React from "react"
-import User from "./User"
+import React from "react";
+import User from "./User";
+import useGetAllUsers from "../../context/useGetAllUsers";
 
 function Users() {
+  const [allUsers, loading] = useGetAllUsers();
+  console.log(allUsers);
   return (
-    // <div
-    //   className="py-2 flex-1 overflow-y-auto"
-    //   style={{ maxHeight: "calc(84vh - 10vh)" }}
-    // >
     <div>
-      <User />
-      <User />
-      <User />
-      <User />
-      <User />
-      <User />
-      <User />
-      <User />
-      <User />
-      <User />
-      <User />
-      <User />
+      {/* <h1 className="px-8 py-2 text-white font-semibold bg-slate-800 rounded-md">
+        Messages
+      </h1> */}
+     
+      {allUsers.map((users,index)=>{
+        return <User key={index} users={users}/>
+      })
+        
+      }
     </div>
-  )
+  );
 }
 
-export default Users
+export default Users;

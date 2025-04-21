@@ -1,26 +1,39 @@
-// require("dotenv").config(); // 👈 First line
+require("dotenv").config(); // 👈 First line
 
+const cookieParser = require("cookie-parser");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const userRouter = require("./App/routes/userRoutes");
+const path = require("path"); // ✅ Add this
 
-const app = express();
+const userRouter = require("./App/routes/userRoutes");
+const router = require("./App/routes/messageRouter");
+
+const { app, server } = require("./SocketIO/server.js"); // 👈 Use app from server.js only
+
+// ✅ Serve the uploads folder statically
+app.use("/uploads", express.static(path.join(__dirname, "App/middleware/uploads")));
+console.log(path.join(__dirname, "App/middleware/uploads"));
+// Middlewares
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
 
-// const PORT = process.env.PORT || 8020;
-// const URI = process.env.MONGODB_URI;
+// Environment
+const PORT = process.env.PORT || 8020;
+const URI = process.env.MONGODB_URI;
 
-// console.log("MONGODB_URI:", URI); // ✅ Debug
+// Routes
+app.use("/api/user", userRouter);
+app.use("/api/message", router);
 
-app.use("/user", userRouter);
-
+// MongoDB Connection
 mongoose
-  .connect("mongodb+srv://vaibhavnagargoje82:w0ys2FtG1SR9Irua@cluster0.td7d4al.mongodb.net/ChatApp-using-MERN?retryWrites=true&w=majority&appName=Cluster0")
+  .connect(URI)
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-app.listen(8000, () => {
-  console.log(`Server is running on port`);
+// Start server
+server.listen(PORT, () => {
+  console.log(`🚀 Server is running on port ${PORT}`);
 });

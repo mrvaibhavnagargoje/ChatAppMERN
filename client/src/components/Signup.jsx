@@ -28,31 +28,40 @@ function Signup() {
   }
 
   const onSubmit = async (data) => {
-    const userInfo = {
-      name: data.name,
-      email: data.email,
-      password: data.password,
-      confirmpassword: data.confirmpassword,
+    const formData = new FormData();
+    
+    // Append user data
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+    formData.append("confirmpassword", data.confirmpassword);
+    
+    // Append the profile image
+    if (data.profileImage) {
+      formData.append("profileImage", data.profileImage[0]);
+    } else {
+      toast.error("Please upload a profile image");
+      return;
     }
-
-    // console.log(userInfo);
-    await axios
-      .post("http://localhost:8000/user/signup", userInfo)
-      .then((response) => {
-        // console.log(response);
-        if (response.data) {
-          toast.success("Signup successful")
-          navigate("/login") // ✅ Login page कडे redirect करा
-        }
-        // localStorage.setItem("ChatApp", JSON.stringify(response.data));
-        // setAuthUser(response.data);
-      })
-      .catch((error) => {
-        if (error.response) {
-          toast.error("Error: " + error.response.data.error)
-        }
-      })
-  }
+  
+    try {
+      const response = await axios.post("/api/user/signup", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Ensure content-type is correct
+        },
+      });
+  
+      if (response.data) {
+        toast.success("Signup successful");
+        navigate("/login");
+      }
+    } catch (error) {
+      if (error.response) {
+        toast.error("Error: " + error.response.data.error);
+      }
+    }
+  };
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 px-4">
       {/* <ToastContainer/> */}
@@ -70,6 +79,20 @@ function Signup() {
           Create a new{" "}
           <span className="font-semibold text-indigo-500">Account</span>
         </h2>
+        <div className="relative">
+  <User size={18} className="absolute left-3 top-3 text-gray-400" />
+  <input
+    type="file"
+    accept="image/*"
+    {...register("profileImage", { required: true })}
+    className="pl-10 pr-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-200"
+  />
+  {errors.profileImage && (
+    <span className="text-red-500 text-sm font-semibold">
+      This field is required
+    </span>
+  )}
+</div>
 
         {/* Fullname */}
         <div className="relative">
