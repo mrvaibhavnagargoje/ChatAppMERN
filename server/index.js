@@ -7,13 +7,14 @@ const cors = require("cors");
 const path = require("path"); // ✅ Add this
 
 const userRouter = require("./App/routes/userRoutes");
-const router = require("./App/routes/messageRouter");
+const messageRouter = require("./App/routes/messageRouter");
 
 const { app, server } = require("./SocketIO/server.js"); // 👈 Use app from server.js only
 
 // ✅ Serve the uploads folder statically
 app.use("/uploads", express.static(path.join(__dirname, "App/middleware/uploads")));
 console.log(path.join(__dirname, "App/middleware/uploads"));
+
 // Middlewares
 app.use(express.json());
 app.use(cors());
@@ -25,7 +26,7 @@ const URI = process.env.MONGODB_URI;
 
 // Routes
 app.use("/api/user", userRouter);
-app.use("/api/message", router);
+app.use("/api/message", messageRouter);
 
 // MongoDB Connection
 mongoose
@@ -33,7 +34,13 @@ mongoose
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
+// Serve React app from build folder
+app.use(express.static(path.join(__dirname, "../client/build"))); // Serving static files from build folder
 
+// Catch-all route for React app
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../client/build", "index.html"));
+});
 
 // Start server
 server.listen(PORT, () => {
