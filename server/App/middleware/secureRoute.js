@@ -1,26 +1,64 @@
-const jwt = require("jsonwebtoken");
-const userModel = require("../models/userModel")
+// const jwt = require("jsonwebtoken");
+// const userModel = require("../models/userModel")
 
+
+// const secureRoute = async (req, res, next) => {
+//   try {
+//     const token = req.cookies.jwt|| req.headers.authorization?.split(" ")[1];;
+//     if (!token) {
+//       return res.status(401).json({ error: "No token, authorization denied" });
+//     }
+//     const decoded = jwt.verify(token,process.env.JWT_TOKEN);
+//     if (!decoded) {
+//       return res.status(401).json({ error: "Invalid Token" });
+//     }
+//     const user = await userModel.findById(decoded.userId).select("-password"); // current loggedin user
+//     if (!user) {
+//       return res.status(401).json({ error: "No user found" });
+//     }
+//     req.user = user;
+//     next();
+//   } catch (error) {
+//     console.log("Error in secureRoute: ", error);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// };
+// module.exports={secureRoute}
+
+const jwt = require("jsonwebtoken");
+const userModel = require("../models/userModel");
 
 const secureRoute = async (req, res, next) => {
   try {
-    const token = req.cookies.jwt|| req.headers.authorization?.split(" ")[1];;
+    // Token fetch करणे, cookies किंवा headers मध्ये
+    const token = req.cookies.jwt || req.headers.authorization?.split(" ")[1];
+    
     if (!token) {
       return res.status(401).json({ error: "No token, authorization denied" });
     }
-    const decoded = jwt.verify(token,process.env.JWT_TOKEN);
-    if (!decoded) {
-      return res.status(401).json({ error: "Invalid Token" });
-    }
-    const user = await userModel.findById(decoded.userId).select("-password"); // current loggedin user
+    
+    // Token verify करणे
+    const decoded = jwt.verify(token, process.env.JWT_TOKEN, (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ error: "Token expired or invalid" });
+      }
+      return decoded; // Correct token passed back
+    });
+
+    // User fetch करणे
+    const user = await userModel.findById(decoded.userId).select("-password");
+
     if (!user) {
       return res.status(401).json({ error: "No user found" });
     }
-    req.user = user;
-    next();
+
+    req.user = user; // User info request object मध्ये सेट करणे
+    next(); // पुढील middleware किंवा route handler मध्ये जा
+
   } catch (error) {
     console.log("Error in secureRoute: ", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
-module.exports={secureRoute}
+
+module.exports = { secureRoute };
