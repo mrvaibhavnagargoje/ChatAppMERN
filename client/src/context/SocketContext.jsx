@@ -18,7 +18,7 @@ const SocketProvider = ({ children }) => {
     let socketInstance;
 
     if (authUser?.user?._id) {
-      socketInstance = io("http://localhost:8000", {
+      socketInstance = io("https://chatappmern-0w6e.onrender.com", {
         query: {
           userId: authUser.user._id,
         },
