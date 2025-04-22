@@ -34,13 +34,6 @@ mongoose
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 
-  // Static files serve करायचं
-  app.use(express.static(path.join(__dirname, "../client/build")));
-  
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/build/index.html"));
-  });
-  
 
 // Start server
 server.listen(PORT, () => {

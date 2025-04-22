@@ -2,11 +2,11 @@
   "name": "chatappproject",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "heroku-postbuild": "cd client && npm install && npm run build",
-    "postinstall": "cd server && npm install",
-    "start": "cd server && node index.js"
-  },
+ "scripts": {
+   "client": "cd client && npm run dev",
+  "server": "cd server && npm run dev",
+  "dev": "concurrently \"npm run server\" \"npm run client\""
+ },
   "dependencies": {
     "cookie-parser": "^1.4.7"
   },

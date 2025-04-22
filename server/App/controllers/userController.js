@@ -22,7 +22,8 @@ const signup = async (req, res) => {
     const hashPassword = await bcrypt.hash(password, 10);
     
     // Save profile image path
-    const profileImagePath = `/uploads/${req.file.filename}`; // ✅
+      // Save profile image path
+    const profileImagePath = `/uploads/${req.file.filename}`;  // ✅
 
     // Create new user
     const newUser = new userModel({
